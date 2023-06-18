@@ -8,5 +8,11 @@ $(PROGRAM): main.py
 	cat main.py >> $(PROGRAM)
 	chmod +x $(PROGRAM)
 
+turnin:
+	tar -zcvf aopf20_lgtg20.tar.gz main.py graph.py makefile
+
+turninteste:
+	tar -zcvf aopf20_lgtg20.tar.gz main.py graph.py makefile *.dot
+
 clean:
 	rm -f $(PROGRAM)
