@@ -1,9 +1,12 @@
 import abc
+from queue import Queue
 
 class Graph(abc.ABC):
-    def __init__ (self, num_vertices, directed=False):
+    def __init__ (self, num_vertices, vertices, edges, directed=False):
         self.num_vertices = num_vertices
         self.directed = directed
+        self.vertices = vertices
+        self.edges = edges
 
     @abc.abstractmethod
     def add_edge(self, v1, v2, weight):
@@ -27,10 +30,11 @@ class Graph(abc.ABC):
 
 
 class AdjMatrixGraph(Graph):
-    def __init__(self, num_vertices, directed=False):
-        super(AdjMatrixGraph, self).__init__(num_vertices, directed)
+    def __init__(self, num_vertices, vertices, edges, directed=False):
+        super(AdjMatrixGraph, self).__init__(num_vertices, vertices, edges, directed)
         self.matrix = self.zero_matrix(num_vertices)
-        print(self.matrix)
+        for e in edges:
+            self.add_edge(self.vertices.index(e[0]), self.vertices.index(e[1]))
 
     def zero_matrix(self, num_vertices):
         matrix = []
@@ -70,5 +74,32 @@ class AdjMatrixGraph(Graph):
         pass
 
     def show_matrix(self):
-        for line in self.matrix:
+        print(" ", end=" ")
+        for v in self.vertices:
+            print(f" {v}", end=" ")
+        print()
+        for i, line in enumerate(self.matrix):
+            print(self.vertices[i], end=" ")
             print(line)
+
+    def topological_sort(self):
+        zerodeg = Queue()
+        indegree_map = {}
+        sorted_list = []
+        for v in range(self.num_vertices):
+            indegree_map[v] = self.get_indegree(v)
+            if indegree_map[v] == 0:
+                zerodeg.put(v)
+        
+        while not zerodeg.empty():
+            v = zerodeg.get()
+            sorted_list.append(self.vertices[v])
+            adjlist = self.get_adjacent_vertices(v)
+            for adj in adjlist:
+                indegree_map[adj] = indegree_map[adj] - 1
+                if indegree_map[adj] == 0:
+                    zerodeg.put(adj)
+
+        if len(sorted_list) < self.num_vertices:
+            print("graph has directed cycle")
+        return sorted_list

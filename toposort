@@ -1,43 +1,32 @@
 #!/usr/bin/env python3
 from graph import *
-from queue import Queue
+import sys
 
-g = AdjMatrixGraph(8, True)
+# input parsing
+vertices = set()
+edges = []
+for line in sys.stdin:
+    if '{' in line or '}' in line:
+        continue
+    if 'Exit' == line.rstrip():
+        break
+    edge = []
+    iterator = filter(str.isalnum, line)
+    for v in iterator:
+        vertices.add(v)
+        edge.append(v)
+        if (len(edge) == 2):
+            edges.append(tuple(edge))
+            edge.pop(0)
 
-g.add_edge(0, 1)
-g.add_edge(0, 2)
-g.add_edge(1, 2)
-g.add_edge(1, 3)
-g.add_edge(3, 4)
+vertices = list(vertices)
 
-g.add_edge(5, 6)
-g.add_edge(5, 7)
-
+# build Graph
+g = AdjMatrixGraph(len(vertices), vertices, edges, True)
 print("\nmatriz:")
 g.show_matrix()
 
-def topological_sort(graph: Graph):
-    zerodeg = Queue()
-    indegree_map = {}
-    sorted_list = []
-    for v in range(graph.num_vertices):
-        indegree_map[v] = graph.get_indegree(v)
-        if indegree_map[v] == 0:
-            zerodeg.put(v)
-    
-    while not zerodeg.empty():
-        v = zerodeg.get()
-        sorted_list.append(v)
-        adjlist = graph.get_adjacent_vertices(v)
-        for adj in adjlist:
-            indegree_map[adj] = indegree_map[adj] - 1
-            if indegree_map[adj] == 0:
-                zerodeg.put(adj)
-
-    if len(sorted_list) < g.num_vertices:
-        print("graph has directed cycle")
-    return sorted_list
-
-sorted = topological_sort(g)
+# generate and print toposort list
+sorted = g.topological_sort()
 print("topological_sort: ")
 print(sorted)
