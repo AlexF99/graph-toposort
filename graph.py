@@ -87,6 +87,8 @@ class AdjMatrixGraph(Graph):
         indegree_map = {}
         sorted_list = []
         for v in range(self.num_vertices):
+            # como todo grafo direcionado aciclico tem pelo menos 1 fonte
+            # é seguro partir de um vertice com grau de entrada zero (fonte)
             indegree_map[v] = self.get_indegree(v)
             if indegree_map[v] == 0:
                 zerodeg.put(v)
@@ -101,5 +103,6 @@ class AdjMatrixGraph(Graph):
                     zerodeg.put(adj)
 
         if len(sorted_list) < self.num_vertices:
-            print("graph has directed cycle")
+            print("Grafo possui ciclo direcionado")
+            return []
         return sorted_list

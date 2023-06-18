@@ -1,7 +1,7 @@
 from graph import *
 import sys
 
-# input parsing
+# Processa input
 vertices = set()
 edges = []
 for line in sys.stdin:
@@ -20,12 +20,13 @@ for line in sys.stdin:
 
 vertices = list(vertices)
 
-# build Graph
+# Constroi grafo
 g = AdjMatrixGraph(len(vertices), vertices, edges, True)
-print("\nmatriz:")
-g.show_matrix()
 
-# generate and print toposort list
+# Gera ordenacao topologica
 sorted = g.topological_sort()
-print("topological_sort: ")
-print(sorted)
+n = len(sorted) - 1
+for i, v in enumerate(sorted):
+    if i == n:
+        print(v, end="\n")
+    else: print(v, end=" ")
