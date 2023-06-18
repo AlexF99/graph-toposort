@@ -1,5 +1,4 @@
 import abc
-from queue import Queue
 
 class Graph(abc.ABC):
     def __init__ (self, num_vertices, vertices, edges, directed=False):
@@ -83,7 +82,7 @@ class AdjMatrixGraph(Graph):
             print(line)
 
     def topological_sort(self):
-        zerodeg = Queue()
+        zerodeg = []
         indegree_map = {}
         sorted_list = []
         for v in range(self.num_vertices):
@@ -91,16 +90,16 @@ class AdjMatrixGraph(Graph):
             # é seguro partir de um vertice com grau de entrada zero (fonte)
             indegree_map[v] = self.get_indegree(v)
             if indegree_map[v] == 0:
-                zerodeg.put(v)
+                zerodeg.append(v)
         
-        while not zerodeg.empty():
-            v = zerodeg.get()
+        while len(zerodeg) > 0:
+            v = zerodeg.pop(-1) # comportamento de pilha
             sorted_list.append(self.vertices[v])
             adjlist = self.get_adjacent_vertices(v)
             for adj in adjlist:
                 indegree_map[adj] = indegree_map[adj] - 1
                 if indegree_map[adj] == 0:
-                    zerodeg.put(adj)
+                    zerodeg.append(adj)
 
         if len(sorted_list) < self.num_vertices:
             print("Grafo possui ciclo direcionado")
