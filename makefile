@@ -9,7 +9,7 @@ $(PROGRAM): main.py
 	chmod +x $(PROGRAM)
 
 turnin:
-	tar -zcvf aopf20_lgtg20.tar.gz main.py graph.py makefile
+	tar -zcvf aopf20_lgtg20.tar.gz main.py graph.py makefile relatorio_grafos.pdf *.dot
 
 turninteste:
 	tar -zcvf aopf20_lgtg20.tar.gz main.py graph.py makefile *.dot

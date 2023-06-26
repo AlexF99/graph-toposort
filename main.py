@@ -24,7 +24,33 @@ vertices = list(vertices)
 g = AdjMatrixGraph(len(vertices), vertices, edges, True)
 
 # Gera ordenacao topologica
-sorted = g.topological_sort()
+
+def topological_sort(graph: AdjMatrixGraph):
+    zerodeg = []
+    indegree_map = {}
+    sorted_list = []
+    for v in range(graph.num_vertices):
+        # como todo grafo direcionado aciclico tem pelo menos 1 fonte
+        # é seguro partir de um vertice com grau de entrada zero (fonte)
+        indegree_map[v] = graph.get_indegree(v)
+        if indegree_map[v] == 0:
+            zerodeg.append(v)
+    
+    while len(zerodeg) > 0:
+        v = zerodeg.pop(-1) # comportamento de pilha
+        sorted_list.append(graph.vertices[v])
+        adjlist = graph.get_adjacent_vertices(v)
+        for adj in adjlist:
+            indegree_map[adj] = indegree_map[adj] - 1
+            if indegree_map[adj] == 0:
+                zerodeg.append(adj)
+
+    if len(sorted_list) < graph.num_vertices:
+        print("Grafo possui ciclo direcionado")
+        return []
+    return sorted_list
+
+sorted = topological_sort(g)
 n = len(sorted) - 1
 for i, v in enumerate(sorted):
     if i == n:

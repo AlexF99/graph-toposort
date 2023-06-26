@@ -80,28 +80,3 @@ class AdjMatrixGraph(Graph):
         for i, line in enumerate(self.matrix):
             print(self.vertices[i], end=" ")
             print(line)
-
-    def topological_sort(self):
-        zerodeg = []
-        indegree_map = {}
-        sorted_list = []
-        for v in range(self.num_vertices):
-            # como todo grafo direcionado aciclico tem pelo menos 1 fonte
-            # é seguro partir de um vertice com grau de entrada zero (fonte)
-            indegree_map[v] = self.get_indegree(v)
-            if indegree_map[v] == 0:
-                zerodeg.append(v)
-        
-        while len(zerodeg) > 0:
-            v = zerodeg.pop(-1) # comportamento de pilha
-            sorted_list.append(self.vertices[v])
-            adjlist = self.get_adjacent_vertices(v)
-            for adj in adjlist:
-                indegree_map[adj] = indegree_map[adj] - 1
-                if indegree_map[adj] == 0:
-                    zerodeg.append(adj)
-
-        if len(sorted_list) < self.num_vertices:
-            print("Grafo possui ciclo direcionado")
-            return []
-        return sorted_list
